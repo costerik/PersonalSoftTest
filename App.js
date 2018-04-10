@@ -11,16 +11,36 @@ import {
   Text,
   View
 } from 'react-native';
+import unsplash, {toJson} from 'unsplash-js/native';
+import env from './env';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export default class App extends Component {
 
-type Props = {};
-export default class App extends Component<Props> {
+  constructor(props) {
+    super(props);
+    this.unsplash = new unsplash({
+      applicationId: env.accessKey,
+      secret: env.secretKey,
+      callbackUrl: 'urn:ietf:wg:oauth:2.0:oob',
+      bearerToken: env.accessToken,
+    });
+  }
+
+  componentWillMount() {
+    this.unsplash.photos.listPhotos(2, 15, "latest")
+    .then(toJson)
+    .then(json => {
+      // Your code
+      console.log("photos",json);
+    });
+    this.unsplash.currentUser.profile()
+    .then(toJson)
+    .then(json => {
+      // Your code
+      console.log("Profile",json);
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -29,9 +49,6 @@ export default class App extends Component<Props> {
         </Text>
         <Text style={styles.instructions}>
           To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
         </Text>
       </View>
     );
