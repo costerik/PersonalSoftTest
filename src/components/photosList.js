@@ -6,8 +6,14 @@ import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Spinn
 import moment from 'moment';
 import * as globalTypes from '../const';
 import colors from '../../theme';
+import { searchPhotos } from '../unsplash/actions';
+import SearchBar from './searchBar';
 
 export class PhotosList extends Component {
+
+    static navigationOptions = {
+        header: <SearchBar />
+    }
 
     static propTypes = {
         photos: PropTypes.array.isRequired,
@@ -37,7 +43,7 @@ export class PhotosList extends Component {
                     </Left>
                 </CardItem>
                 <CardItem cardBody>
-                    <Image source={{ uri: item.urls.small }} style={{ height: 200, width: null, flex: 1 }} />
+                    <Image source={{ uri: item.urls.small }} style={styles.photo} />
                 </CardItem>
                 <CardItem>
                     <Left>
@@ -57,7 +63,7 @@ export class PhotosList extends Component {
     render() {
         return this.props.state === globalTypes.LOADING ? (
             <View style={styles.container}>
-                <Spinner color={colors.mainColor}/>
+                <Spinner color={colors.mainColor} />
             </View>) :
             (
                 <FlatList style={{ flex: 1 }}
@@ -79,8 +85,10 @@ const mapStateToProps = ({ unsplashReducer }) => {
 
 const styles = StyleSheet.create({
     photo: {
-        flex: 1,
         height: 400,
+        width: null,
+        flex: 1,
+        resizeMode: 'stretch',
     },
     container: {
         flex: 1,
