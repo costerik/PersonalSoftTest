@@ -37,7 +37,6 @@ export const getPhotos = () => {
             await createUnsplash().photos.listPhotos(2, 15, "latest")
                 .then(toJson)
                 .then(json => {
-                    console.log("photos", json);
                     dispatch(finishedLoadingPhotos(json));
                 });
         } catch (ex) {

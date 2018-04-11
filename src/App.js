@@ -15,12 +15,9 @@ const appReducer = combineReducers({ ...reducers, });
 const middleware = applyMiddleware(thunkMiddleware);
 const store = Reactotron.createStore(appReducer, compose(middleware));
 import { getPhotos } from './unsplash/actions';
+import MainStack from './stacks/mainStack';
 
 export default class App extends Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
     store.dispatch(getPhotos());
@@ -28,14 +25,9 @@ export default class App extends Component {
 
   render() {
     return (
-      <View Provider={store} style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-      </View>
+      <Provider store={store}>
+        <MainStack />
+      </Provider>
     );
   }
 }
