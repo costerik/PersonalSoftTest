@@ -6,11 +6,6 @@ import thunkMiddleware from 'redux-thunk';
 import Reactotron from 'reactotron-react-native';
 import reducers from './reducers';
 import env from '../env';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
 const appReducer = combineReducers({ ...reducers, });
 const middleware = applyMiddleware(thunkMiddleware);
 const store = Reactotron.createStore(appReducer, compose(middleware));
@@ -31,22 +26,3 @@ export default class App extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});

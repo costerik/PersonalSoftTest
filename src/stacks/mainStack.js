@@ -1,5 +1,6 @@
 import { StackNavigator } from "react-navigation";
 import PhotosList from '../components/photosList';
+import colors from '../../theme';
 
 const MainStack = StackNavigator({
     Main: {
@@ -12,7 +13,7 @@ const MainStack = StackNavigator({
 },{
     navigationOptions:{
         headerStyle: {
-            backgroundColor: 'blue',
+            backgroundColor: colors.mainColor,
         }
     }
 });

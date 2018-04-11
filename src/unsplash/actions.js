@@ -20,18 +20,35 @@ export const finishedLoadingPhotos = (data) => {
     }
 }
 
+export const startedLoadingPhotoByID = () => {
+    return {
+        type: types.STARTED_LOADING_PHOTO_BY_ID,
+        payload: globalStates.LOADING,
+    }
+}
+
+export const finishedLoadingPhotoByID = (data) => {
+    return {
+        type: types.FINISHED_LOADING_PHOTO_BY_ID,
+        payload: {
+            state: globalStates.SUCCESS,
+            data
+        }
+    }
+}
+
 export const notifyError = (err) => {
     return {
         type: types.ERROR_LOADING_PHOTOS,
         payload: {
             state: globalStates.ERROR,
-            message: "There was a problem loading photos",
+            message: err,
         },
     }
 }
 
 export const getPhotos = () => {
-    return async (dispatch, getState) => {
+    return async dispatch => {
         dispatch(startedLoadingPhotos());
         try {
             await createUnsplash().photos.listPhotos(2, 15, "latest")
