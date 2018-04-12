@@ -21,7 +21,18 @@ export default (state = initialState, action) => {
             return { ...state, reducerState: action.payload.state, photos: action.payload.data };
             break;
         case types.ERROR_LOADING_PHOTOS:
-            return { ...state, reducerState: action.payload.state, errorMessage: action.payload.message };
+            return {
+                ...state,
+                reducerState: action.payload.state,
+                errorMessage: action.payload.message
+            };
+            break;
+        case types.ERROR_SEARCHING_PHOTOS:
+            return {
+                ...state,
+                reducerState: action.payload.state,
+                errorMessage: action.payload.message
+            };
             break;
         default:
             return state;

@@ -3,14 +3,14 @@ import { createUnsplash } from '../utils/unsplashUtil';
 import * as types from './const';
 import * as globalStates from '../const';
 
-export const startedLoadingPhotos = () => {
+export const startedGetPhotos = () => {
     return {
         type: types.STARTED_LOADING_PHOTOS,
         payload: globalStates.LOADING,
     }
 }
 
-export const finishedLoadingPhotos = (data) => {
+export const finishedGetPhotos = (data) => {
     return {
         type: types.FINISHED_LOADING_PHOTOS,
         payload: {
@@ -37,9 +37,9 @@ export const finishedSearchPhotos = (data) => {
     }
 }
 
-export const notifyError = (err) => {
+export const notifyError = (type, err) => {
     return {
-        type: types.ERROR_LOADING_PHOTOS,
+        type,
         payload: {
             state: globalStates.ERROR,
             message: err,
@@ -49,18 +49,22 @@ export const notifyError = (err) => {
 
 export const getPhotos = () => {
     return async dispatch => {
-        dispatch(startedLoadingPhotos());
+        dispatch(startedGetPhotos());
         try {
             await createUnsplash().photos.listPhotos()
                 .then(toJson)
                 .then(json => {
-                    dispatch(finishedLoadingPhotos(json));
+                    dispatch(finishedGetPhotos(json));
                 });
         } catch (ex) {
-            dispatch(notifyError("There was an error loading photos"));
+            dispatch(notifyError(
+                types.ERROR_LOADING_PHOTOS,
+                "There was an error loading photos"
+            ));
         }
     }
 }
+
 
 export const searchPhotos = (keyword) => {
     return async dispatch => {
@@ -69,10 +73,14 @@ export const searchPhotos = (keyword) => {
             await createUnsplash().search.photos(keyword)
                 .then(toJson)
                 .then(json => {
+
                     dispatch(finishedSearchPhotos(json.results));
                 });
         } catch (ex) {
-            dispatch(notifyError("There was an error searching photos"));
+            dispatch(notifyError(
+                types.ERROR_SEARCHING_PHOTOS,
+                "There was an error searching photos"
+            ));
         }
     }
 }

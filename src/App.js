@@ -10,7 +10,7 @@ const appReducer = combineReducers({ ...reducers, });
 const middleware = applyMiddleware(thunkMiddleware);
 const store = Reactotron.createStore(appReducer, compose(middleware));
 import { getPhotos } from './unsplash/actions';
-import MainStack from './stacks/mainStack';
+import TabsStack from './stacks/tabsStack';
 
 export default class App extends Component {
 
@@ -21,7 +21,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <MainStack />
+        <TabsStack />
       </Provider>
     );
   }

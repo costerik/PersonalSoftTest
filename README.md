@@ -8,6 +8,7 @@ Native app for Personal Soft
 Run
 
 ```bash
+$ yarn
 $ react-native link
 ```
 
