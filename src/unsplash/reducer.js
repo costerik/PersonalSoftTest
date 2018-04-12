@@ -2,7 +2,6 @@ import * as types from "./const";
 
 const initialState = {
     photos: [],
-    profile: null,
     reducerState: '',
     errorMessage: '',
 }
