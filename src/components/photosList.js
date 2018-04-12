@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { FlatList, View, Image, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Spinner } from 'native-base';
-import moment from 'moment';
+import { Spinner } from 'native-base';
 import * as globalTypes from '../const';
 import colors from '../../theme';
-import { searchPhotos } from '../unsplash/actions';
 import SearchBar from './searchBar';
+import MyCardItem from './myCardItem';
 
 export class PhotosList extends Component {
 
@@ -32,31 +31,7 @@ export class PhotosList extends Component {
 
     renderItem({ item }) {
         return (
-            <Card>
-                <CardItem>
-                    <Left>
-                        <Thumbnail source={{ uri: item.user.profile_image.medium }} />
-                        <Body>
-                            <Text>{item.user.name}</Text>
-                            <Text note>{item.user.username}</Text>
-                        </Body>
-                    </Left>
-                </CardItem>
-                <CardItem cardBody>
-                    <Image source={{ uri: item.urls.small }} style={styles.photo} />
-                </CardItem>
-                <CardItem>
-                    <Left>
-                        <Button transparent>
-                            <Icon active name="thumbs-up" />
-                            <Text>{`${item.likes} Likes`}</Text>
-                        </Button>
-                    </Left>
-                    <Right>
-                        <Text>{moment(item.created_at).fromNow()}</Text>
-                    </Right>
-                </CardItem>
-            </Card>
+            <MyCardItem item={item} styles={styles}/>
         )
     }
 
