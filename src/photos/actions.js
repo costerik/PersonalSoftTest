@@ -1,30 +1,34 @@
 import * as types from './const';
 import * as globalStates from '../const';
+import LocalStorage from '../utils/localStorage';
 
 export const startedAddPhoto = () => {
     return {
-        types: types.STARTED_ADDING_PHOTO,
+        type: types.STARTED_ADDING_PHOTO,
         payload: globalStates.LOADING,
     }
 }
 
-export const finishedAddPhoto = () => {
+export const finishedAddPhoto = (photos) => {
     return {
-        types: types.FINISHED_ADDING_PHOTO,
-        payload: globalStates.SUCCESS,
+        type: types.FINISHED_ADDING_PHOTO,
+        payload: {
+            state: globalStates.SUCCESS,
+            photos,
+        }
     }
 }
 
 export const startedDeletePhoto = () => {
     return {
-        types: types.STARTED_DELETING_PHOTO,
+        type: types.STARTED_DELETING_PHOTO,
         payload: globalStates.LOADING,
     }
 }
 
 export const finishedDeletePhoto = () => {
     return {
-        types: types.FINISHED_DELETING_PHOTO,
+        type: types.FINISHED_DELETING_PHOTO,
         payload: globalStates.SUCCESS,
     }
 }
@@ -41,8 +45,16 @@ export const notifyError = (type, err) => {
 
 export const addPhoto = (photo) => {
     return async dispatch => {
+        dispatch(startedAddPhoto());
         try {
-            dispatch(startedAddPhoto());
+            const data = await LocalStorage.get("photos");
+            let photos = [];
+            if (data && data.length) {
+                photos = data;
+            }
+            photos = [...photos, photo];
+            await LocalStorage.save("photos", photos);
+            dispatch(finishedAddPhoto(photos));
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_ADDING_PHOTO,
@@ -55,8 +67,9 @@ export const addPhoto = (photo) => {
 
 export const deletePhoto = (photo) => {
     return async dispatch => {
+        dispatch(startedDeletePhoto());
         try {
-            dispatch(startedDeletePhoto());
+
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_DELETING_PHOTO,

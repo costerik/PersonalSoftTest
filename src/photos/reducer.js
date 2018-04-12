@@ -6,18 +6,26 @@ const initialState = {
 }
 
 export default (state = initialState, actions) => {
-    switch (actions.TYPE) {
+    switch (actions.type) {
         case types.STARTED_ADDING_PHOTO:
-            return state;
+            return { ...state, reducerState: actions.payload };
             break;
         case types.FINISHED_ADDING_PHOTO:
-            return state;
+            return {
+                ...state,
+                reducerState: actions.payload.state,
+                myPhotos: [...actions.payload.photos]
+            };
             break;
         case types.STARTED_DELETING_PHOTO:
-            return state;
+            return { ...state, reducerState: actions.payload };
             break;
-        case types.FINISHED_DELEING_PHOTO:
-            return state;
+        case types.FINISHED_DELETING_PHOTO:
+            return {
+                ...state,
+                reducerState: actions.payload.state,
+                myPhotos: [...actions.payload.photos]
+            };
             break;
         case types.ERROR_ADDING_PHOTO:
             return {

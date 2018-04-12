@@ -3,7 +3,8 @@ import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from
 import { Image } from 'react-native';
 import moment from 'moment';
 
-const MyCardItem = ({ item, styles }) => {
+const MyCardItem = ( props ) => {
+    const { item, styles } = props;
     return (
         <Card>
             <CardItem>
@@ -13,6 +14,9 @@ const MyCardItem = ({ item, styles }) => {
                         <Text>{item.user.name}</Text>
                         <Text note>{item.user.username}</Text>
                     </Body>
+                    <Button bordered dark onPress={async () => await props.addPhoto(item)}>
+                        <Text>{"ADD"}</Text>
+                    </Button>
                 </Left>
             </CardItem>
             <CardItem cardBody>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View, StyleSheet, Platform} from 'react-native';
+import { FlatList, View, Text, StyleSheet, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Spinner } from 'native-base';
@@ -11,7 +11,7 @@ export class MyPhotosList extends Component {
 
     static navigationOptions = {
         ...Platform.select({
-            ios:{
+            ios: {
                 headerTitle: 'My Photos',
             }
         }),
@@ -34,7 +34,7 @@ export class MyPhotosList extends Component {
 
     renderItem({ item }) {
         return (
-            <MyCardItem item={item} styles={styles}/>
+            <MyCardItem item={item} styles={styles} />
         )
     }
 
@@ -43,20 +43,25 @@ export class MyPhotosList extends Component {
             <View style={styles.container}>
                 <Spinner color={colors.mainColor} />
             </View>) :
-            (
+            (<View style={{flex: 1}}>
+                {this.props.photos.length == 0 ?
+                    <View style={styles.container}>
+                        <Text>{"No photos added :-("}</Text>
+                    </View> :
                 <FlatList style={{ flex: 1 }}
                     data={this.props.photos}
                     renderItem={this.renderItem}
                     keyExtractor={item => item.id}
-                />
-            );
+                />}
+            </View>)
     }
 }
 
-const mapStateToProps = ({ unsplashReducer }) => {
-    const { photos, reducerState } = unsplashReducer;
+const mapStateToProps = ({ photosReducer }) => {
+    const { myPhotos, reducerState } = photosReducer;
+    console.log(myPhotos);
     return {
-        photos,
+        photos: myPhotos,
         state: reducerState,
     }
 }

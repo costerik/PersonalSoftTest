@@ -7,6 +7,7 @@ import * as globalTypes from '../const';
 import colors from '../../theme';
 import SearchBar from './searchBar';
 import MyCardItem from './myCardItem';
+import { addPhoto } from '../photos/actions';
 
 export class PhotosList extends Component {
 
@@ -17,6 +18,7 @@ export class PhotosList extends Component {
     static propTypes = {
         photos: PropTypes.array.isRequired,
         state: PropTypes.string.isRequired,
+        addPhoto: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -27,12 +29,17 @@ export class PhotosList extends Component {
     constructor(props) {
         super(props);
         this.renderItem = this.renderItem.bind(this);
+        this._addPhoto=this._addPhoto.bind(this);
     }
 
     renderItem({ item }) {
         return (
-            <MyCardItem item={item} styles={styles}/>
+            <MyCardItem item={item} styles={styles} addPhoto={this._addPhoto} />
         )
+    }
+
+    async _addPhoto(photo){
+        await this.props.addPhoto(photo);
     }
 
     render() {
@@ -72,4 +79,6 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps, null)(PhotosList);
+export default connect(mapStateToProps, {
+    addPhoto,
+})(PhotosList);
