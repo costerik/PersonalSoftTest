@@ -33,6 +33,23 @@ export const finishedDeletePhoto = () => {
     }
 }
 
+export const startedInitialLoading= () => {
+    return {
+        type: types.STARTED_INITIAL_LOADING,
+        payload: globalStates.LOADING,
+    }
+}
+
+export const finishedInitialLoading = (photos) => {
+    return {
+        type: types.FINISHED_INITIAL_LOADING,
+        payload: {
+            state: globalStates.SUCCESS,
+            photos,
+        }
+    }
+}
+
 export const notifyError = (type, err) => {
     return {
         type,
@@ -55,6 +72,7 @@ export const addPhoto = (photo) => {
             photos = [...photos, photo];
             await LocalStorage.save("photos", photos);
             dispatch(finishedAddPhoto(photos));
+            //Verify not duplicate photos
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_ADDING_PHOTO,
@@ -69,11 +87,30 @@ export const deletePhoto = (photo) => {
     return async dispatch => {
         dispatch(startedDeletePhoto());
         try {
-
+            //TO DO
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_DELETING_PHOTO,
-                `there was a problem deleting photo ${photo}`
+                `there was a problem deleting photo ${photo}`,
+            ));
+        }
+    }
+}
+
+export const initialLoading = () => {
+    return async dispatch => {
+        dispatch(startedInitialLoading());
+        try {
+            const data = await LocalStorage.get("photos");
+            let photos = [];
+            if (data && data.length) {
+                photos = data;
+            }
+            dispatch(finishedInitialLoading(photos));
+        } catch (ex) {
+            dispatch(notifyError(
+                types.ERROR_INITIAL_LOADING,
+                `there was a problem with initial loading`,
             ));
         }
     }

@@ -6,6 +6,7 @@ import { Spinner } from 'native-base';
 import * as globalTypes from '../const';
 import colors from '../../theme';
 import MyCardItem from './myCardItem';
+import { initialLoading } from '../photos/actions';
 
 export class MyPhotosList extends Component {
 
@@ -20,6 +21,7 @@ export class MyPhotosList extends Component {
     static propTypes = {
         photos: PropTypes.array.isRequired,
         state: PropTypes.string.isRequired,
+        initialLoading: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -31,6 +33,12 @@ export class MyPhotosList extends Component {
         super(props);
         this.renderItem = this.renderItem.bind(this);
     }
+
+    
+    async componentWillMount() {
+        this.props.initialLoading();
+    }
+    
 
     renderItem({ item }) {
         return (
@@ -59,7 +67,6 @@ export class MyPhotosList extends Component {
 
 const mapStateToProps = ({ photosReducer }) => {
     const { myPhotos, reducerState } = photosReducer;
-    console.log(myPhotos);
     return {
         photos: myPhotos,
         state: reducerState,
@@ -80,4 +87,6 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps, null)(MyPhotosList);
+export default connect(mapStateToProps, {
+    initialLoading,
+})(MyPhotosList);
