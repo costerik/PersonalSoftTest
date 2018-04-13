@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View, Image, StyleSheet } from 'react-native';
+import { FlatList, View, Image, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Spinner } from 'native-base';
@@ -29,7 +29,7 @@ export class PhotosList extends Component {
     constructor(props) {
         super(props);
         this.renderItem = this.renderItem.bind(this);
-        this._addPhoto=this._addPhoto.bind(this);
+        this._addPhoto = this._addPhoto.bind(this);
     }
 
     renderItem({ item }) {
@@ -38,11 +38,12 @@ export class PhotosList extends Component {
         )
     }
 
-    async _addPhoto(photo){
+    async _addPhoto(photo) {
         await this.props.addPhoto(photo);
     }
 
     render() {
+
         return this.props.state === globalTypes.LOADING ? (
             <View style={styles.container}>
                 <Spinner color={colors.mainColor} />

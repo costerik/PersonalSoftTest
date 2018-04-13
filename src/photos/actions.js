@@ -1,11 +1,12 @@
 import * as types from './const';
-import * as globalStates from '../const';
+import * as globalTypes from '../const';
 import LocalStorage from '../utils/localStorage';
+import { findPhotoByID, deletePhotoByID, showAlertDialog } from '../utils/photosUtils';
 
 export const startedAddPhoto = () => {
     return {
         type: types.STARTED_ADDING_PHOTO,
-        payload: globalStates.LOADING,
+        payload: globalTypes.LOADING,
     }
 }
 
@@ -13,7 +14,7 @@ export const finishedAddPhoto = (photos) => {
     return {
         type: types.FINISHED_ADDING_PHOTO,
         payload: {
-            state: globalStates.SUCCESS,
+            state: globalTypes.SUCCESS,
             photos,
         }
     }
@@ -22,21 +23,24 @@ export const finishedAddPhoto = (photos) => {
 export const startedDeletePhoto = () => {
     return {
         type: types.STARTED_DELETING_PHOTO,
-        payload: globalStates.LOADING,
+        payload: globalTypes.LOADING,
     }
 }
 
-export const finishedDeletePhoto = () => {
+export const finishedDeletePhoto = (photos) => {
     return {
         type: types.FINISHED_DELETING_PHOTO,
-        payload: globalStates.SUCCESS,
+        payload: {
+            state: globalTypes.SUCCESS,
+            photos,
+        }
     }
 }
 
-export const startedInitialLoading= () => {
+export const startedInitialLoading = () => {
     return {
         type: types.STARTED_INITIAL_LOADING,
-        payload: globalStates.LOADING,
+        payload: globalTypes.LOADING,
     }
 }
 
@@ -44,7 +48,7 @@ export const finishedInitialLoading = (photos) => {
     return {
         type: types.FINISHED_INITIAL_LOADING,
         payload: {
-            state: globalStates.SUCCESS,
+            state: globalTypes.SUCCESS,
             photos,
         }
     }
@@ -54,7 +58,7 @@ export const notifyError = (type, err) => {
     return {
         type,
         payload: {
-            state: globalStates.ERROR,
+            state: globalTypes.ERROR,
             message: err,
         },
     }
@@ -69,14 +73,22 @@ export const addPhoto = (photo) => {
             if (data && data.length) {
                 photos = data;
             }
-            photos = [...photos, photo];
-            await LocalStorage.save("photos", photos);
-            dispatch(finishedAddPhoto(photos));
-            //Verify not duplicate photos
+
+            if (findPhotoByID(photo.id, photos)) {
+                showAlertDialog();
+                dispatch(notifyError(
+                    types.ERROR_DUPLICATED_PHOTO,
+                    globalTypes.DUPLICATED_MSG,
+                ));
+            } else {
+                photos = [...photos, photo];
+                await LocalStorage.save("photos", photos);
+                dispatch(finishedAddPhoto(photos));
+            }
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_ADDING_PHOTO,
-                `there was a problem adding photo ${photo}`
+                `there was a problem adding photo ${photo}`,
             ));
         }
     }
@@ -87,7 +99,16 @@ export const deletePhoto = (photo) => {
     return async dispatch => {
         dispatch(startedDeletePhoto());
         try {
-            //TO DO
+            const data = await LocalStorage.get("photos");
+            let photos = [];
+            if (data && data.length) {
+                photos = data;
+            }
+
+            photos = deletePhotoByID(photo.id, photos);
+            await LocalStorage.save("photos", photos);
+            dispatch(finishedDeletePhoto(photos));
+
         } catch (ex) {
             dispatch(notifyError(
                 types.ERROR_DELETING_PHOTO,

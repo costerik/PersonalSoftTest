@@ -6,7 +6,7 @@ import { Spinner } from 'native-base';
 import * as globalTypes from '../const';
 import colors from '../../theme';
 import MyCardItem from './myCardItem';
-import { initialLoading } from '../photos/actions';
+import { initialLoading, deletePhoto } from '../photos/actions';
 
 export class MyPhotosList extends Component {
 
@@ -22,6 +22,7 @@ export class MyPhotosList extends Component {
         photos: PropTypes.array.isRequired,
         state: PropTypes.string.isRequired,
         initialLoading: PropTypes.func.isRequired,
+        deletePhoto: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -32,18 +33,23 @@ export class MyPhotosList extends Component {
     constructor(props) {
         super(props);
         this.renderItem = this.renderItem.bind(this);
+        this._deletePhoto = this._deletePhoto.bind(this);
     }
 
-    
+
     async componentWillMount() {
         this.props.initialLoading();
     }
-    
+
 
     renderItem({ item }) {
         return (
-            <MyCardItem item={item} styles={styles} />
+            <MyCardItem item={item} styles={styles} deletePhoto={this._deletePhoto} />
         )
+    }
+
+    async _deletePhoto(photo) {
+        await this.props.deletePhoto(photo);
     }
 
     render() {
@@ -51,16 +57,16 @@ export class MyPhotosList extends Component {
             <View style={styles.container}>
                 <Spinner color={colors.mainColor} />
             </View>) :
-            (<View style={{flex: 1}}>
+            (<View style={{ flex: 1 }}>
                 {this.props.photos.length == 0 ?
                     <View style={styles.container}>
                         <Text>{"No photos added :-("}</Text>
                     </View> :
-                <FlatList style={{ flex: 1 }}
-                    data={this.props.photos}
-                    renderItem={this.renderItem}
-                    keyExtractor={item => item.id}
-                />}
+                    <FlatList style={{ flex: 1 }}
+                        data={this.props.photos}
+                        renderItem={this.renderItem}
+                        keyExtractor={item => item.id}
+                    />}
             </View>)
     }
 }
@@ -89,4 +95,5 @@ const styles = StyleSheet.create({
 
 export default connect(mapStateToProps, {
     initialLoading,
+    deletePhoto,
 })(MyPhotosList);

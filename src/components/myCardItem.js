@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right } from 'native-base';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import moment from 'moment';
 
-const MyCardItem = ( props ) => {
+const MyCardItem = (props) => {
     const { item, styles } = props;
     return (
         <Card>
@@ -14,9 +14,18 @@ const MyCardItem = ( props ) => {
                         <Text>{item.user.name}</Text>
                         <Text note>{item.user.username}</Text>
                     </Body>
-                    <Button bordered dark onPress={async () => await props.addPhoto(item)}>
-                        <Text>{"ADD"}</Text>
-                    </Button>
+                    {props.addPhoto &&
+                        <View style={{ right: 0, }}>
+                            <Button bordered dark small onPress={async () => await props.addPhoto(item)}>
+                                <Text>{"ADD"}</Text>
+                            </Button>
+                        </View>}
+                    {props.deletePhoto &&
+                        <View style={{ right: 0, }}>
+                            <Button bordered danger small onPress={async () => await props.deletePhoto(item)}>
+                                <Text>{"REMOVE"}</Text>
+                            </Button>
+                        </View>}
                 </Left>
             </CardItem>
             <CardItem cardBody>
